@@ -11,14 +11,12 @@ const Home: NextPage = () => {
   const [gameOver, setGameOver] = useState(false);
 
   useEffect(() => {
-    initialize();
+    shuffle();
+    setFlippedCards([]);
+    setFoundCards([]);
+    setMoves(0);
+    setGameOver(false);
   }, []);
-
-  useEffect(() => {
-    if (foundCards.length > 0 && foundCards.length === boardData.length) {
-      setGameOver(true);
-    }
-  }, [moves]);
 
   const initialize = () => {
     shuffle();
@@ -27,6 +25,12 @@ const Home: NextPage = () => {
     setMoves(0);
     setGameOver(false);
   };
+
+  useEffect(() => {
+    if (foundCards.length > 0 && foundCards.length === boardData.length) {
+      setGameOver(true);
+    }
+  }, [moves, boardData, foundCards]);
 
   const shuffle = () => {
     const shuffledCards = [...boardIcons, ...boardIcons]

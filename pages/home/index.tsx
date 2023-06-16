@@ -1,8 +1,8 @@
 import React from "react";
-import withPrivateRoute from "../../src/shared/libs/WithPrivateRoute";
+// import withPrivateRoute from "../../src/shared/libs/WithPrivateRoute";
 
 const Dashboard = () => {
   return <div>Dashboard</div>;
 };
 
-export default withPrivateRoute(Dashboard);
+export default Dashboard;
