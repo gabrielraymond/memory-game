@@ -1,0 +1,7 @@
+const DASHBOARD_HOME = "/home";
+const LOGIN = "/";
+
+const PRIVATE_ROUTES = [DASHBOARD_HOME];
+const AUTH_ROUTES = [LOGIN];
+
+export { PRIVATE_ROUTES, AUTH_ROUTES, DASHBOARD_HOME, LOGIN };
