@@ -1,92 +1,84 @@
 import type { NextPage } from "next";
 import { useState, useEffect } from "react";
 
-const boardIcons = ["🦚", "🚀", "🤡", "🤖", "👽", "👻", "🐧", "😄"];
+const board = ["🦚", "🚀", "🤡", "🤖", "👽", "👻", "🐧", "😄"];
 
 const Home: NextPage = () => {
   const [boardData, setBoardData] = useState<string[]>([]);
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
-  const [foundCards, setFoundCards] = useState<any[]>([]);
-  const [moves, setMoves] = useState(0);
-  const [gameOver, setGameOver] = useState(false);
+  const [matchedCards, setMatchedCards] = useState<any[]>([]);
+  const [moves, setMoves] = useState<number>(0);
+  const [gameOver, setGameOver] = useState<boolean>(false);
 
   useEffect(() => {
-    shuffle();
-    setFlippedCards([]);
-    setFoundCards([]);
-    setMoves(0);
-    setGameOver(false);
+    initialize();
   }, []);
+
+  useEffect(() => {
+    if (matchedCards.length == 16) {
+      setGameOver(true);
+    }
+  }, [moves]);
 
   const initialize = () => {
     shuffle();
-    setFlippedCards([]);
-    setFoundCards([]);
-    setMoves(0);
     setGameOver(false);
+    setFlippedCards([]);
+    setMatchedCards([]);
+    setMoves(0);
   };
-
-  useEffect(() => {
-    if (foundCards.length > 0 && foundCards.length === boardData.length) {
-      setGameOver(true);
-    }
-  }, [moves, boardData, foundCards]);
-
   const shuffle = () => {
-    const shuffledCards = [...boardIcons, ...boardIcons]
+    const shuffledCards = [...board, ...board]
       .sort(() => Math.random() - 0.5)
       .map((v) => v);
-
-    console.log(shuffledCards);
 
     setBoardData(shuffledCards);
   };
 
-  const updateBoardData = (idx: number) => {
-    if (!flippedCards.includes(idx)) {
-      if (flippedCards.length === 1) {
+  const updateActiveCards = (i: number) => {
+    if (!flippedCards.includes(i)) {
+      if (flippedCards.length == 1) {
         const firstIdx = flippedCards[0];
-        const secondIdx = idx;
-
-        if (boardData[firstIdx] === boardData[secondIdx]) {
-          setFoundCards([...foundCards, firstIdx, secondIdx]);
+        const secondIdx = i;
+        if (boardData[firstIdx] == boardData[secondIdx]) {
+          setMatchedCards((prev) => [...prev, firstIdx, secondIdx]);
         }
-        setFlippedCards([...flippedCards, idx]);
-      } else if (flippedCards.length === 2) {
-        setFlippedCards([idx]);
+
+        setFlippedCards([...flippedCards, i]);
+      } else if (flippedCards.length == 2) {
+        setFlippedCards([i]);
       } else {
-        setFlippedCards([...flippedCards, idx]);
+        setFlippedCards([...flippedCards, i]);
       }
 
-      setMoves((prev) => prev + 1);
+      setMoves((v) => v + 1);
     }
   };
 
   return (
     <div className="container">
       <div className="menu">
-        <p>Moves: {moves}</p>
-        <button
-          onClick={() => initialize()}
-          className="reset-btn"
-          disabled={!gameOver}
-        >
+        <p>{`Moves - ${moves}`}</p>
+
+        <button onClick={() => initialize()} className="reset-btn">
           Reset
         </button>
-        <p>{`Game Over: ${gameOver}`}</p>
+        <p>{`GameOver - ${gameOver}`}</p>
       </div>
 
       <div className="board">
-        {boardData.map((data: any, idx: any) => {
-          const flipped = flippedCards.includes(idx) ? "flipped" : "";
-          const found = foundCards.includes(idx) ? "flipped found" : "";
+        {boardData.map((data, i) => {
+          const flipped = flippedCards.includes(i) ? true : false;
+          const matched = matchedCards.includes(i) ? true : false;
           return (
             <div
               onClick={() => {
-                updateBoardData(idx);
+                updateActiveCards(i);
               }}
-              key={idx}
-              className={`card ${flipped} ${found}`}
+              key={i}
+              className={`card ${flipped || matched ? "active" : ""} ${
+                matched ? "matched" : ""
+              } ${gameOver ? "gameover" : ""}`}
             >
               <div className="card-front">{data}</div>
               <div className="card-back"></div>

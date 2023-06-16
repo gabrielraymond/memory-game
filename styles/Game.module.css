@@ -1,9 +1,0 @@
-*{
-    box-sizing: border-box;
-}
-
-.board{
-    display: grid;
-    grid-template-columns: repeat(4,75px);
-    
-}
